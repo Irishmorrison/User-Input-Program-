@@ -6,58 +6,55 @@ Here is the source code:
 #include <string>
 #include <algorithm>
 
-using namespace std;
+void reverseContent(const std::string& inputFile, const std::string& outputFile) {
+    std::ifstream inFile(inputFile);
+    std::string content;
+    
+    if (inFile) {
+        // Read the entire content of the input file
+        std::getline(inFile, content, '\0'); // Read until EOF
+        inFile.close();
+    } else {
+        std::cerr << "Error opening file: " << inputFile << std::endl;
+        return;
+    }
 
-// Function to reverse a string
-string reverseString(const string &str) {
-    string reversedStr = str;
-    reverse(reversedStr.begin(), reversedStr.end());
-    return reversedStr;
+    // Reverse the content
+    std::reverse(content.begin(), content.end());
+
+    // Write the reversed content to the output file
+    std::ofstream outFile(outputFile);
+    if (outFile) {
+        outFile << content;
+        outFile.close();
+    } else {
+        std::cerr << "Error opening file: " << outputFile << std::endl;
+    }
 }
 
 int main() {
-    string inputString;
-    string filePath = "CSC450_CT5_mod5.txt";
-    string reverseFilePath = "CSC450-mod5-reverse.txt";
+    std::string inputFileName = "CSC450_CT5_mod5.txt";
+    std::string outputFileName = "CSC450-mod5-reverse.txt";
+    std::string userInput;
 
-    // Step 1: Get user input
-    cout << "Enter a string to store in the file: ";
-    getline(cin, inputString);  // Use getline to allow spaces in input
+    // Obtain input from the user
+    std::cout << "Enter text to append to " << inputFileName << ": ";
+    std::getline(std::cin, userInput);
 
-    // Step 2: Append user input to the file
-    ofstream outFile(filePath, ios::app);
-    if (outFile.is_open()) {
-        outFile << inputString << endl;  // Append the input
+    // Append user input to the specified file
+    std::ofstream outFile(inputFileName, std::ios::app);
+    if (outFile) {
+        outFile << userInput << std::endl;
         outFile.close();
     } else {
-        cerr << "Unable to open file for writing." << endl;
-        return 1; // Exit with error
+        std::cerr << "Error opening file: " << inputFileName << std::endl;
     }
 
-    // Step 3: Reverse the contents of the file
-    string content;
-    ifstream inFile(filePath);
-    if (inFile.is_open()) {
-        string line;
-        while (getline(inFile, line)) {
-            content += line + '\n';  // Read the entire file
-        }
-        inFile.close();
-    } else {
-        cerr << "Unable to open file for reading." << endl;
-        return 1; // Exit with error
-    }
+    // Call function to reverse the content
+    reverseContent(inputFileName, outputFileName);
 
-    // Step 4: Write reversed content to a new file
-    ofstream revFile(reverseFilePath);
-    if (revFile.is_open()) {
-        revFile << reverseString(content);  // Write the reversed content
-        revFile.close();
-    } else {
-        cerr << "Unable to open reverse file for writing." << endl;
-        return 1; // Exit with error
-    }
-
-    cout << "Data has been written and reversed." << endl;
+    std::cout << "Data appended and reversed content written to " << outputFileName << std::endl;
     return 0;
 }
+
+
